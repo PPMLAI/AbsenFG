@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<title>Dashboard Pengajuan Cuti Karyawan</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<style>
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Poppins,sans-serif;
+}
+
+body{
+background:#eef3f8;
+}
+
+header{
+
+height:70px;
+background:#0d47a1;
+color:white;
+
+display:flex;
+align-items:center;
+justify-content:space-between;
+
+padding:0 25px;
+
+box-shadow:0 3px 8px rgba(0,0,0,.2);
+
+}
+
+header h2{
+
+font-size:24px;
+
+}
+
+.container{
+
+display:flex;
+
+}
+
+.sidebar{
+
+width:230px;
+background:#123b72;
+min-height:100vh;
+color:white;
+
+}
+
+.sidebar h3{
+
+padding:25px;
+text-align:center;
+background:#0d47a1;
+
+}
+
+.sidebar ul{
+
+list-style:none;
+
+}
+
+.sidebar li{
+
+padding:18px 25px;
+border-bottom:1px solid rgba(255,255,255,.1);
+
+cursor:pointer;
+
+}
+
+.sidebar li:hover{
+
+background:#0d47a1;
+
+}
+
+.content{
+
+flex:1;
+
+padding:25px;
+
+}
+
+.cards{
+
+display:grid;
+
+grid-template-columns:repeat(4,1fr);
+
+gap:15px;
+
+margin-bottom:25px;
+
+}
+
+.card{
+
+background:white;
+border-radius:12px;
+padding:20px;
+box-shadow:0 4px 10px rgba(0,0,0,.15);
+
+}
+
+.card h3{
+
+color:#0d47a1;
+font-size:17px;
+
+}
+
+.card h1{
+
+margin-top:15px;
+font-size:38px;
+
+}
+
+.form-area{
+
+display:grid;
+
+grid-template-columns:1fr 1fr;
+
+gap:20px;
+
+}
+
+.form-box{
+
+background:white;
+padding:20px;
+
+border-radius:12px;
+
+box-shadow:0 5px 12px rgba(0,0,0,.15);
+
+}
+
+.form-box h3{
+
+margin-bottom:20px;
+
+color:#0d47a1;
+
+}
+
+.form-group{
+
+margin-bottom:15px;
+
+}
+
+label{
+
+display:block;
+
+margin-bottom:5px;
+
+font-weight:600;
+
+}
+
+input,select,textarea{
+
+width:100%;
+padding:10px;
+
+border:1px solid #ccc;
+
+border-radius:6px;
+
+}
+
+textarea{
+
+height:90px;
+
+resize:none;
+
+}
+
+button{
+
+padding:12px 20px;
+
+background:#0d47a1;
+
+border:none;
+
+color:white;
+
+border-radius:6px;
+
+cursor:pointer;
+
+}
+
+button:hover{
+
+background:#1565c0;
+
+}
+
+table{
+
+width:100%;
+
+border-collapse:collapse;
+
+}
+
+table th{
+
+background:#0d47a1;
+
+color:white;
+
+padding:10px;
+
+}
+
+table td{
+
+padding:8px;
+
+border-bottom:1px solid #ddd;
+
+text-align:center;
+
+}
+
+@media(max-width:900px){
+
+.sidebar{
+
+display:none;
+
+}
+
+.cards{
+
+grid-template-columns:repeat(2,1fr);
+
+}
+
+.form-area{
+
+grid-template-columns:1fr;
+
+}
+
+}
+
+
+#tanggalJam{color:#fff;line-height:1.5;font-size:14px;font-weight:500;min-width:250px;text-align:right;}
+@media(max-width:768px){header{flex-direction:column;height:auto;padding:15px;gap:8px;}#tanggalJam{text-align:center;min-width:unset;}}
+
+</style>
+
+</head>
+
+<body>
+
+<header>
+
+<h2>Dashboard Pengajuan Cuti</h2>
+
+<div id="tanggalJam" style="text-align:right;font-size:14px;font-weight:500;">Memuat...</div>
+
+</header>
+
+<div class="container">
+
+<div class="sidebar">
+
+<h3>MENU</h3>
+
+<ul>
+
+<li>💼 Dashboard</li>
+
+<li>📝 Pengajuan Cuti</li>
+
+<li>📅 Riwayat</li>
+
+<li>📊 Laporan</li>
+
+</ul>
+
+</div>
+
+<div class="content">
+
+<div class="cards">
+
+<div class="card">
+<h3>Total Pengajuan</h3>
+<h1 id="totalData">0</h1>
+</div>
+
+<div class="card">
+<h3>Cuti Tahunan</h3>
+<h1 id="cutiTahunan">0</h1>
+</div>
+
+<div class="card">
+<h3>Cuti Besar</h3>
+<h1 id="cutiBesar">0</h1>
+</div>
+
+<div class="card">
+<h3>Sisa Cuti (Preview)</h3>
+<h1 id="sisaCuti">-</h1>
+</div>
+
+</div>
+
+<div class="form-area">
+
+<div class="form-box">
+
+<h3>Form Pengajuan Cuti</h3>
+
+<div class="form-group">
+
+<label>Nama</label>
+
+<select id="nama" onchange="isiData()">
+
+<option value="">Pilih</option>
+
+<option>Sylvester Seno</option>
+
+<option>Timur Sukoco</option>
+
+<option>Supriyadi</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>NIK</label>
+
+<input type="text" id="nik" readonly>
+
+</div>
+
+<div class="form-group">
+
+<label>Bagian</label>
+
+<input type="text" id="bagian" readonly>
+
+</div>
+
+<div class="form-group">
+
+<label>Tanggal Pengajuan</label>
+
+<input type="date" id="tgl">
+
+</div>
+<div class="form-group">
+
+<label>Mulai Cuti</label>
+
+<input type="date" id="mulai" onchange="hitungCuti()">
+
+</div>
+
+<div class="form-group">
+
+<label>Sampai Dengan</label>
+
+<input type="date" id="sampai" onchange="hitungCuti()">
+
+</div>
+
+<div class="form-group">
+
+<label>Jenis Cuti</label>
+
+<select id="jenis" onchange="hitungCuti()">
+
+<option value="Cuti Tahunan">Cuti Tahunan (12 Hari)</option>
+
+<option value="Cuti Besar">Cuti Besar (22 Hari)</option>
+
+</select>
+
+</div>
+
+<div class="form-group">
+
+<label>Keperluan Cuti</label>
+
+<textarea id="keperluan"></textarea>
+
+</div>
+
+<div class="form-group">
+
+<label>Lokasi Cuti</label>
+
+<input type="text" id="lokasi">
+
+</div>
+
+<div class="form-group">
+
+<label>Nomor HP yang dapat dihubungi</label>
+
+<input type="text" id="hp">
+
+</div>
+
+<div class="form-group">
+
+<label>Lama Cuti</label>
+
+<input type="text" id="lama" value="0 Hari" readonly>
+
+</div>
+
+<div class="form-group">
+
+<label>Sisa Jatah Cuti Terpilih</label>
+
+<input type="text" id="sisa" value="-" readonly>
+
+</div>
+
+<div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap;">
+
+<button onclick="simpan()">
+💾 Simpan
+</button>
+
+<button type="button" onclick="resetForm()">
+🔄 Reset
+</button>
+
+<button onclick="window.print()">
+🖨️ Cetak
+</button>
+
+</div>
+
+</div>
+
+<div class="form-box">
+
+<h3>Dashboard Riwayat Pengajuan</h3>
+
+<input
+type="text"
+id="cari"
+placeholder="Cari Nama..."
+onkeyup="cariData()"
+style="margin-bottom:15px;"
+>
+
+<table id="tabel">
+
+<thead>
+
+<tr>
+
+<th>No</th>
+<th>Nama</th>
+<th>Mulai</th>
+<th>Selesai</th>
+<th>Hari</th>
+<th>Jenis</th>
+<th>Sisa</th>
+
+</tr>
+
+</thead>
+
+<tbody id="tbody">
+
+<tr>
+
+<td colspan="7">
+
+Belum ada data
+
+</td>
+
+</tr>
+
+</tbody>
+
+</table>
+
+<br>
+
+<div style="display:grid;grid-template-columns:repeat(2,1fr);gap:15px;">
+
+<div class="card">
+
+<h3>Total Pengajuan</h3>
+
+<h1 id="totalPengajuan">
+0
+</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Total Hari Cuti</h3>
+
+<h1 id="totalHari">
+0
+</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Cuti Tahunan</h3>
+
+<h1 id="jumlahTahunan">
+0
+</h1>
+
+</div>
+
+<div class="card">
+
+<h3>Cuti Besar</h3>
+
+<h1 id="jumlahBesar">
+0
+</h1>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<script>
+
+const SCRIPT_URL="https://script.google.com/macros/s/AKfycbzbGXktHRkHtED0HOpG6K7DdzmtGQEhKnOZCE1OeEgMpvcE1eFs5Mrk1khAg70rQ5gz/exec";
+
+let databaseCutiKaryawan = {
+    "Sylvester Seno": { "Cuti Tahunan": 12, "Cuti Besar": 22 },
+    "Timur Sukoco":   { "Cuti Tahunan": 12, "Cuti Besar": 22 },
+    "Supriyadi":     { "Cuti Tahunan": 12, "Cuti Besar": 22 }
+};
+
+function isiData(){
+
+    const nama=document.getElementById("nama").value;
+
+    if(nama=="Sylvester Seno"){
+        document.getElementById("nik").value="LAI 448";
+        document.getElementById("bagian").value="PPM";
+    }
+
+    if(nama=="Timur Sukoco"){
+        document.getElementById("nik").value="LAI 576";
+        document.getElementById("bagian").value="PPM";
+    }
+
+    if(nama=="Supriyadi"){
+        document.getElementById("nik").value="LAI 624";
+        document.getElementById("bagian").value="PPM";
+    }
+
+    updateTampilanSisa();
+    hitungCuti();
+}
+
+function updateTampilanSisa() {
+    let nama = document.getElementById("nama").value;
+    let jenis = document.getElementById("jenis").value;
+    
+    if (!nama) {
+        document.getElementById("sisaCuti").innerHTML = "-";
+        document.getElementById("sisa").value = "-";
+        return;
+    }
+    
+    let sisa = databaseCutiKaryawan[nama][jenis];
+    document.getElementById("sisaCuti").innerHTML = sisa;
+    document.getElementById("sisa").value = sisa + " Hari";
+}
+
+function hitungHariKerja(startDate, endDate) {
+    let hitung = 0;
+    let curDate = new Date(startDate.getTime());
+    
+    while (curDate <= endDate) {
+        let dayOfWeek = curDate.getDay();
+        if (dayOfWeek !== 0 && dayOfWeek !== 6) { 
+            hitung++;
+        }
+        curDate.setDate(curDate.getDate() + 1);
+    }
+    return hitung;
+}
+
+// FUNGSI BARU: Mengubah format YYYY-MM-DD menjadi DD-MM-YYYY
+function formatTanggalIndo(dateString) {
+    if (!dateString) return "";
+    let bagian = dateString.split("-"); // memisahkan [YYYY, MM, DD]
+    if (bagian.length === 3) {
+        return bagian[2] + "-" + bagian[1] + "-" + bagian[0]; // menggabungkan menjadi DD-MM-YYYY
+    }
+    return dateString;
+}
+
+function hitungCuti(){
+
+    let nama = document.getElementById("nama").value;
+    let mulai = document.getElementById("mulai").value;
+    let sampai = document.getElementById("sampai").value;
+    let jenis = document.getElementById("jenis").value;
+
+    if(nama == "") {
+        document.getElementById("lama").value = "0 Hari";
+        return;
+    }
+
+    updateTampilanSisa();
+
+    if(mulai=="" || sampai=="") return;
+
+    let t1 = new Date(mulai);
+    let t2 = new Date(sampai);
+
+    if(t1 > t2) {
+        alert("Tanggal mulai tidak boleh melebihi tanggal selesai.");
+        document.getElementById("sampai").value = "";
+        document.getElementById("lama").value = "0 Hari";
+        return;
+    }
+
+    let hari = hitungHariKerja(t1, t2);
+    document.getElementById("lama").value = hari + " Hari";
+
+    let sisaTersedia = databaseCutiKaryawan[nama][jenis];
+    let sisaSetelahPotong = sisaTersedia - hari;
+    
+    if (sisaSetelahPotong < 0) {
+        alert("Pengajuan dibatalkan! Sisa " + jenis + " untuk " + nama + " tidak mencukupi.\nSisa saat ini: " + sisaTersedia + " Hari.");
+        document.getElementById("sampai").value = "";
+        document.getElementById("lama").value = "0 Hari";
+        updateTampilanSisa();
+        return;
+    }
+    
+    document.getElementById("sisa").value = sisaSetelahPotong + " Hari";
+    document.getElementById("sisaCuti").innerHTML = sisaSetelahPotong;
+}
+
+function simpan(){
+
+    let tglRaw = document.getElementById("tgl").value;
+    let mulaiRaw = document.getElementById("mulai").value;
+    let sampaiRaw = document.getElementById("sampai").value;
+
+    if(document.getElementById("nama").value==""){
+        alert("Pilih nama terlebih dahulu.");
+        return;
+    }
+    if(mulaiRaw=="" || sampaiRaw==""){
+        alert("Isi rentang tanggal cuti dengan benar.");
+        return;
+    }
+
+    // Mengonversi tanggal ke format DD-MM-YYYY sebelum dikirim ke spreadsheet & tabel riwayat
+    let data={
+        nama:document.getElementById("nama").value,
+        nik:document.getElementById("nik").value,
+        bagian:document.getElementById("bagian").value,
+        tgl: formatTanggalIndo(tglRaw),
+        mulai: formatTanggalIndo(mulaiRaw),
+        sampai: formatTanggalIndo(sampaiRaw),
+        lama:document.getElementById("lama").value,
+        jenis:document.getElementById("jenis").value,
+        keperluan:document.getElementById("keperluan").value,
+        lokasi:document.getElementById("lokasi").value,
+        hp:document.getElementById("hp").value,
+        sisa:document.getElementById("sisa").value
+    };
+
+    let hari = parseInt(data.lama);
+    let kuotaSaatIni = databaseCutiKaryawan[data.nama][data.jenis];
+
+    if ((kuotaSaatIni - hari) < 0) {
+        alert("Gagal menyimpan! Jumlah hari cuti melebihi jatah " + data.jenis + " " + data.nama);
+        return;
+    }
+
+    databaseCutiKaryawan[data.nama][data.jenis] -= hari;
+
+    fetch(SCRIPT_URL,{
+        method:"POST",
+        body:JSON.stringify(data)
+    })
+    .then(res=>res.text())
+    .then(r=>{
+        alert("Pengajuan cuti berhasil disimpan.");
+        tambahTabel(data);
+        resetForm();
+    })
+    .catch(err=>{
+        alert("Data tersimpan lokal.\nPeriksa URL Apps Script.");
+        tambahTabel(data);
+        resetForm();
+    });
+}
+
+function resetForm() {
+    document.getElementById("nama").value = "";
+    document.getElementById("nik").value = "";
+    document.getElementById("bagian").value = "";
+    document.getElementById("tgl").value = "";
+    document.getElementById("mulai").value = "";
+    document.getElementById("sampai").value = "";
+    document.getElementById("keperluan").value = "";
+    document.getElementById("lokasi").value = "";
+    document.getElementById("hp").value = "";
+    document.getElementById("lama").value = "0 Hari";
+    document.getElementById("jenis").value = "Cuti Tahunan";
+    document.getElementById("sisaCuti").innerHTML = "-";
+    document.getElementById("sisa").value = "-";
+}
+
+function tambahTabel(data){
+    const tbody=document.getElementById("tbody");
+
+    if(tbody.innerHTML.includes("Belum ada data")){
+        tbody.innerHTML="";
+    }
+
+    let no=tbody.rows.length+1;
+
+    let row=`
+    <tr>
+        <td>${no}</td>
+        <td>${data.nama}</td>
+        <td>${data.mulai}</td>
+        <td>${data.sampai}</td>
+        <td>${data.lama}</td>
+        <td>${data.jenis}</td>
+        <td>${data.sisa}</td>
+    </tr>
+    `;
+
+    tbody.innerHTML+=row;
+
+    document.getElementById("totalPengajuan").innerHTML=no;
+    document.getElementById("totalData").innerHTML=no;
+
+    let totalHari=0;
+    for(let i=0;i<tbody.rows.length;i++){
+        totalHari+=parseInt(tbody.rows[i].cells[4].innerHTML);
+    }
+    document.getElementById("totalHari").innerHTML=totalHari;
+
+    let tahunan=0;
+    let besar=0;
+
+    for(let i=0;i<tbody.rows.length;i++){
+        let jenis=tbody.rows[i].cells[5].innerHTML;
+        if(jenis=="Cuti Tahunan") tahunan++;
+        if(jenis=="Cuti Besar") besar++;
+    }
+
+    document.getElementById("jumlahTahunan").innerHTML=tahunan;
+    document.getElementById("jumlahBesar").innerHTML=besar;
+    document.getElementById("cutiTahunan").innerHTML=tahunan;
+    document.getElementById("cutiBesar").innerHTML=besar;
+}
+
+function cariData(){
+    let input=document.getElementById("cari").value.toUpperCase();
+    let tr=document.getElementById("tbody").getElementsByTagName("tr");
+
+    for(let i=0;i<tr.length;i++){
+        let td=tr[i].getElementsByTagName("td")[1];
+        if(td){
+            let txt=td.innerHTML.toUpperCase();
+            if(txt.indexOf(input)>-1){
+                tr[i].style.display="";
+            }else{
+                tr[i].style.display="none";
+            }
+        }
+    }
+}
+
+function updateTanggalJam(){const s=new Date();const h=["Minggu","Senin","Selasa","Rabu","Kamis","Jumat","Sabtu"];const b=["Januari","Februari","Maret","April","Mei","Juni","Juli","Agustus","September","Oktober","November","Desember"];document.getElementById("tanggalJam").innerHTML=h[s.getDay()]+", "+String(s.getDate()).padStart(2,"0")+" "+b[s.getMonth()]+" "+s.getFullYear()+"<br>"+String(s.getHours()).padStart(2,"0")+":"+String(s.getMinutes()).padStart(2,"0")+":"+String(s.getSeconds()).padStart(2,"0")+" WIB";}
+updateTanggalJam();setInterval(updateTanggalJam,1000);
+
+</script>
+
+</body>
+</html>
